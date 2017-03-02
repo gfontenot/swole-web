@@ -1,0 +1,4 @@
+database:
+  database: swole_test
+
+auth-dummy-login: true

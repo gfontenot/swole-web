@@ -1,0 +1,8 @@
+static-dir:     "_env:STATIC_DIR:static"
+host:           "_env:HOST:*4"
+port:           "_env:PORT:3000"
+ip-from-header: "_env:IP_FROM_HEADER:false"
+log-level:      "_env:LOG_LEVEL:info"
+
+database-url: "_env:DATABASE_URL:postgres://swole:swole@localhost:5432/swole_dev"
+database-pool-size: "_env:DATABASE_POOL_SIZE:10"

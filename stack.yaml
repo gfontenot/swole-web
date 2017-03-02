@@ -1,0 +1,13 @@
+resolver: lts-8.3
+
+packages:
+- '.'
+
+extra-deps:
+  - heroku-persistent-0.2.0
+  - heroku-0.1.2.3
+  - load-env-0.1.1
+
+flags: {}
+
+extra-package-dbs: []

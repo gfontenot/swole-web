@@ -14,6 +14,7 @@ Flag library-only
 library
     hs-source-dirs: src, src/app
     exposed-modules: Application
+                     Calculator.Weight
                      Foundation
                      Handler.Common
                      Handler.Home
@@ -105,6 +106,7 @@ test-suite test
     type:              exitcode-stdio-1.0
     main-is:           Spec.hs
     other-modules:     TestImport
+                       Calculator.WeightSpec
     hs-source-dirs:    test
     ghc-options:       -Wall
 

@@ -20,6 +20,7 @@ library
                      Import
                      Import.NoFoundation
                      Model
+                     Model.Movement
                      Model.Persist
                      Model.Weight
                      Settings

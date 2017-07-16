@@ -21,6 +21,7 @@ library
                      Import.NoFoundation
                      Model
                      Model.Persist
+                     Model.Weight
                      Settings
                      Settings.StaticFiles
 

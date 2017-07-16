@@ -3,3 +3,20 @@ User
     password Text Maybe
     UniqueUser ident
     deriving Typeable
+
+Workout
+    title Text Maybe
+    date UTCTime
+
+WorkoutSet
+    workoutId WorkoutId
+
+Movement
+    setId WorkoutSetId
+    activityId ActivityId
+    weightAmount Double
+    weightUnit WeightUnit
+    reps Int
+
+Activity
+    name Text

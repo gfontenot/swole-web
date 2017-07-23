@@ -1,0 +1,5 @@
+<fieldset id="#{name}-fieldset">
+  $forall val <- vals
+    <input id="#{theId}" name="#{name}" *{attrs} type="text" :isReq:required value="#{val}">
+
+<input type="button" value="Add" onclick="var s = document.createElement('input'); s.type='text'; s.name='#{name}'; fieldset = document.getElementById('#{name}-fieldset'); fieldset.appendChild(s); return false;">

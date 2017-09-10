@@ -4,6 +4,12 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
+import Json.Decode
+
+onChange : (String -> msg) -> Html.Attribute msg
+onChange tagger =
+  Html.Events.on "change" (Json.Decode.map tagger Html.Events.targetValue)
+
 type WeightUnit
     = Pounds
     | Kilos
@@ -37,7 +43,7 @@ view set =
     div []
         [ input [type_ "text", placeholder "reps", onInput RepsUpdated ] []
         , input [type_ "text", placeholder "weight", onInput (WeightUpdated << parseInt)] []
-        , select [ onInput (WeightUnitUpdated << parseUnit) ]
+        , select [ onChange (WeightUnitUpdated << parseUnit) ]
             [ viewUnit set.weight Pounds
             , viewUnit set.weight Kilos
             ]

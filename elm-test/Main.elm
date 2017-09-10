@@ -8,40 +8,46 @@ type WeightUnit
     = Pounds
     | Kilos
 
+type alias Weight =
+    { amount : Int
+    , unit : WeightUnit
+    }
+
 type alias WorkoutSet =
     { reps : List Int
-    , weight : Int
-    , unitOfMeasurement : WeightUnit
+    , weight : Weight
     }
 
 type Msg
     = RepsUpdated String
-    | WeightUpdated String
-    | UnitUpdated WeightUnit
+    | WeightUpdated Int
+    | WeightUnitUpdated WeightUnit
 
 initialWorkoutSet : WorkoutSet
 initialWorkoutSet =
     { reps = []
-    , weight = 0
-    , unitOfMeasurement = Kilos
+    , weight =
+        { amount = 0
+        , unit = Kilos
+        }
     }
 
 view : WorkoutSet -> Html Msg
 view set =
     div []
         [ input [type_ "text", placeholder "reps", onInput RepsUpdated ] []
-        , input [type_ "text", placeholder "weight", onInput WeightUpdated] []
-        , select [ onInput (UnitUpdated << parseUnit) ]
-            [ viewUnit set.unitOfMeasurement Pounds
-            , viewUnit set.unitOfMeasurement Kilos
+        , input [type_ "text", placeholder "weight", onInput (WeightUpdated << parseInt)] []
+        , select [ onInput (WeightUnitUpdated << parseUnit) ]
+            [ viewUnit set.weight Pounds
+            , viewUnit set.weight Kilos
             ]
         , text <| format set
         ]
 
-viewUnit : WeightUnit -> WeightUnit -> Html Msg
+viewUnit : Weight -> WeightUnit -> Html Msg
 viewUnit current unit = option
     [ value <| toString unit
-    , selected <| current == unit
+    , selected <| current.unit == unit
     ]
     [ text <| toString unit ]
 
@@ -49,10 +55,16 @@ update : Msg -> WorkoutSet -> WorkoutSet
 update msg set = case msg of
     RepsUpdated str ->
         { set | reps = parseReps str }
-    WeightUpdated str ->
-        { set | weight = parseInt str }
-    UnitUpdated unit ->
-        { set | unitOfMeasurement = unit }
+    WeightUpdated n ->
+        let
+            current = set.weight
+        in
+            { set | weight = { current | amount = n } }
+    WeightUnitUpdated unit ->
+        let
+            current = set.weight
+        in
+           { set | weight = { current | unit = unit }}
 
 parseReps : String -> List Int
 parseReps str
@@ -75,12 +87,17 @@ format : WorkoutSet -> String
 format set =
     let
         formattedReps = String.join " + " <| List.map toString set.reps
-        formattedWeight = toString set.weight
-        formattedUnits = case set.unitOfMeasurement of
+    in
+       formattedReps ++ " @ " ++ formattedWeight set.weight
+
+formattedWeight : Weight -> String
+formattedWeight weight =
+    let
+        formattedUnit = case weight.unit of
             Pounds -> "lbs"
             Kilos -> "kgs"
     in
-       formattedReps ++ " @ " ++ formattedWeight ++ formattedUnits
+       toString weight.amount ++ " " ++ formattedUnit
 
 main : Program Never WorkoutSet Msg
 main = Html.beginnerProgram

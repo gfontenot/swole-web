@@ -3,13 +3,9 @@ module Main exposing (main)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
-import Json.Decode
 
 import Swole.Types exposing (..)
-
-onChange : (String -> msg) -> Html.Attribute msg
-onChange tagger =
-  Html.Events.on "change" (Json.Decode.map tagger Html.Events.targetValue)
+import Helpers.Events exposing (onChange)
 
 type Msg
     = RepsUpdated String

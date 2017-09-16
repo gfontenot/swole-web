@@ -3,34 +3,23 @@ module Main exposing (main)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
-
 import Json.Decode
+
+import Swole.Types exposing (..)
 
 onChange : (String -> msg) -> Html.Attribute msg
 onChange tagger =
   Html.Events.on "change" (Json.Decode.map tagger Html.Events.targetValue)
-
-type WeightUnit
-    = Pounds
-    | Kilos
-
-type alias Weight =
-    { amount : Int
-    , unit : WeightUnit
-    }
-
-type alias WorkoutSet =
-    { reps : List Int
-    , weight : Weight
-    }
 
 type Msg
     = RepsUpdated String
     | WeightUpdated Int
     | WeightUnitUpdated WeightUnit
 
-initialWorkoutSet : WorkoutSet
-initialWorkoutSet =
+type alias Model = WorkoutSet
+
+initialModel : Model
+initialModel =
     { reps = []
     , weight =
         { amount = 0
@@ -38,7 +27,7 @@ initialWorkoutSet =
         }
     }
 
-view : WorkoutSet -> Html Msg
+view : Model -> Html Msg
 view set =
     div []
         [ input [type_ "text", placeholder "reps", onInput RepsUpdated ] []
@@ -47,7 +36,7 @@ view set =
             [ viewUnit set.weight Pounds
             , viewUnit set.weight Kilos
             ]
-        , text <| format set
+        , text <| setToString set
         ]
 
 viewUnit : Weight -> WeightUnit -> Html Msg
@@ -57,20 +46,14 @@ viewUnit current unit = option
     ]
     [ text <| toString unit ]
 
-update : Msg -> WorkoutSet -> WorkoutSet
+update : Msg -> Model -> Model
 update msg set = case msg of
     RepsUpdated str ->
         { set | reps = parseReps str }
     WeightUpdated n ->
-        let
-            current = set.weight
-        in
-            { set | weight = { current | amount = n } }
+        updateWeightAmount set n
     WeightUnitUpdated unit ->
-        let
-            current = set.weight
-        in
-           { set | weight = { current | unit = unit }}
+        updateWeightUnit set unit
 
 parseReps : String -> List Int
 parseReps str
@@ -84,30 +67,13 @@ parseInt s
     |> Result.withDefault 0
 
 parseUnit : String -> WeightUnit
-parseUnit str = case str of
-    "Pounds" -> Pounds
-    "Kilos" -> Kilos
-    _ -> Debug.crash "Not a valid unit of measurement"
+parseUnit str
+    = toWeightUnit str
+    |> Result.withDefault Kilos
 
-format : WorkoutSet -> String
-format set =
-    let
-        formattedReps = String.join " + " <| List.map toString set.reps
-    in
-       formattedReps ++ " @ " ++ formattedWeight set.weight
-
-formattedWeight : Weight -> String
-formattedWeight weight =
-    let
-        formattedUnit = case weight.unit of
-            Pounds -> "lbs"
-            Kilos -> "kgs"
-    in
-       toString weight.amount ++ " " ++ formattedUnit
-
-main : Program Never WorkoutSet Msg
+main : Program Never Model Msg
 main = Html.beginnerProgram
-    { model = initialWorkoutSet
+    { model = initialModel
     , view = view
     , update = update
     }

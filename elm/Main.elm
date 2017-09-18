@@ -1,24 +1,56 @@
 module Main exposing (main)
 
 import Html exposing (..)
+import List.Extra as List
+
+import Swole.Components.SingleSet as SingleSet
+import Helpers.Maybe as Maybe
+import Helpers.List as List
 
 type Msg
-    = None
+    = SingleSetMsg (Int, SingleSet.Msg)
 
-type alias Model = String
+type alias Model =
+    { setModels : List SingleSet.Model
+    }
 
 initialModel : Model
-initialModel = "foo"
+initialModel =
+    { setModels = [SingleSet.initialModel, SingleSet.initialModel]
+    }
 
 view : Model -> Html Msg
-view model = text model
+view model =
+    let
+        sets = List.enumerated model.setModels
+    in
+        div []
+            [ ol [] (List.map viewSet sets)
+            ]
+
+viewSet : (Int, SingleSet.Model) -> Html Msg
+viewSet (i, setModel) =
+    li [] [map (SingleSetMsg << \m -> (i, m)) (SingleSet.view setModel)]
 
 update : Msg -> Model -> Model
-update msg model = case msg of
-    None -> model
+update msg model =
+    case msg of
+        SingleSetMsg (i, m) ->
+            let
+                updated
+                    = List.getAt i model.setModels
+                    |> Maybe.fromJust
+                    |> SingleSet.update m
+
+                models
+                    = List.setAt i updated model.setModels
+                    |> Maybe.fromJust
+
+            in
+               { model | setModels = models }
 
 main : Program Never Model Msg
-main = Html.beginnerProgram
+main = beginnerProgram
     { model = initialModel
     , view = view
     , update = update

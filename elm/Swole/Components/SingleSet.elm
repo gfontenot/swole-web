@@ -1,4 +1,10 @@
-module Swole.Components.SingleSet exposing (main)
+module Swole.Components.SingleSet exposing
+    ( Msg
+    , Model
+    , view
+    , update
+    , initialModel
+    )
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -12,7 +18,9 @@ type Msg
     | WeightUpdated Int
     | WeightUnitUpdated WeightUnit
 
-initialModel : WorkoutSet
+type alias Model = WorkoutSet
+
+initialModel : Model
 initialModel =
     { reps = []
     , weight =
@@ -21,7 +29,7 @@ initialModel =
         }
     }
 
-view : WorkoutSet -> Html Msg
+view : Model -> Html Msg
 view set =
     div []
         [ input [type_ "text", placeholder "reps", onInput RepsUpdated ] []
@@ -40,7 +48,7 @@ viewUnit current unit = option
     ]
     [ text <| toString unit ]
 
-update : Msg -> WorkoutSet -> WorkoutSet
+update : Msg -> Model -> Model
 update msg set = case msg of
     RepsUpdated str ->
         { set | reps = parseReps str }
@@ -64,10 +72,3 @@ parseUnit : String -> WeightUnit
 parseUnit str
     = toWeightUnit str
     |> Result.withDefault Kilos
-
-main : Program Never WorkoutSet Msg
-main = Html.beginnerProgram
-    { model = initialModel
-    , view = view
-    , update = update
-    }

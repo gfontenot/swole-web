@@ -32,21 +32,45 @@ initialModel =
 view : Model -> Html Msg
 view set =
     div []
-        [ input [type_ "text", placeholder "reps", onInput RepsUpdated ] []
-        , input [type_ "text", placeholder "weight", onInput (WeightUpdated << parseInt)] []
-        , select [ onChange (WeightUnitUpdated << parseUnit) ]
-            [ viewUnit set.weight Pounds
-            , viewUnit set.weight Kilos
-            ]
+        [ repsField set.reps
+        , weightField set.weight
+        , weightUnitPicker set.weight
         , text <| setToString set
         ]
 
-viewUnit : Weight -> WeightUnit -> Html Msg
-viewUnit current unit = option
-    [ value <| toString unit
-    , selected <| current.unit == unit
-    ]
-    [ text <| toString unit ]
+repsField : List Int -> Html Msg
+repsField reps =
+    input
+        [ type_ "text"
+        , placeholder "reps"
+        , onInput RepsUpdated
+        ]
+        []
+
+weightField : Weight -> Html Msg
+weightField weight =
+    input
+        [ type_ "text"
+        , placeholder "weight"
+        , onInput (WeightUpdated << parseInt)
+        ]
+        []
+
+weightUnitPicker : Weight -> Html Msg
+weightUnitPicker weight =
+    select
+        [ onChange (WeightUnitUpdated << parseUnit) ]
+        [ unitOption weight Pounds
+        , unitOption weight Kilos
+        ]
+
+unitOption : Weight -> WeightUnit -> Html Msg
+unitOption current unit =
+    option
+        [ value <| toString unit
+        , selected <| current.unit == unit
+        ]
+        [ text <| toString unit ]
 
 update : Msg -> Model -> Model
 update msg set = case msg of

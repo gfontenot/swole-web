@@ -11,6 +11,7 @@ import Helpers.List as List
 type Msg
     = SingleSetMsg (Int, SingleSet.Msg)
     | AddSet
+    | DeleteSet Int
 
 type alias Model =
     { setModels : List SingleSet.Model
@@ -33,13 +34,19 @@ view model =
 
 viewSet : (Int, SingleSet.Model) -> Html Msg
 viewSet (i, setModel) =
-    li [] [map (SingleSetMsg << \m -> (i, m)) (SingleSet.view setModel)]
+    li []
+        [ map (SingleSetMsg << \m -> (i, m)) (SingleSet.view setModel)
+        , button [onClick (DeleteSet i)] [ text "Delete" ]
+        ]
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
         AddSet ->
             { model | setModels = model.setModels ++ [SingleSet.initialModel] }
+        DeleteSet i ->
+            { model | setModels = List.removeAt i model.setModels }
+
         SingleSetMsg (i, m) ->
             let
                 updated

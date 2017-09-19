@@ -43,6 +43,7 @@ repsField reps =
     input
         [ type_ "text"
         , placeholder "reps"
+        , value (formatReps reps)
         , onInput RepsUpdated
         ]
         []
@@ -52,6 +53,7 @@ weightField weight =
     input
         [ type_ "text"
         , placeholder "weight"
+        , value (toString weight.amount)
         , onInput (WeightUpdated << parseInt)
         ]
         []

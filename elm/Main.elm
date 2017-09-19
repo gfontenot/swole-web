@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Html exposing (..)
+import Html.Events exposing (onClick)
 import List.Extra as List
 
 import Swole.Components.SingleSet as SingleSet
@@ -9,6 +10,7 @@ import Helpers.List as List
 
 type Msg
     = SingleSetMsg (Int, SingleSet.Msg)
+    | AddSet
 
 type alias Model =
     { setModels : List SingleSet.Model
@@ -16,7 +18,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { setModels = [SingleSet.initialModel, SingleSet.initialModel]
+    { setModels = [SingleSet.initialModel]
     }
 
 view : Model -> Html Msg
@@ -26,6 +28,7 @@ view model =
     in
         div []
             [ ol [] (List.map viewSet sets)
+            , button [ onClick AddSet ] [ text "Add set" ]
             ]
 
 viewSet : (Int, SingleSet.Model) -> Html Msg
@@ -35,6 +38,8 @@ viewSet (i, setModel) =
 update : Msg -> Model -> Model
 update msg model =
     case msg of
+        AddSet ->
+            { model | setModels = model.setModels ++ [SingleSet.initialModel] }
         SingleSetMsg (i, m) ->
             let
                 updated

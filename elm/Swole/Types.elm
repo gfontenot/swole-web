@@ -3,12 +3,12 @@ module Swole.Types exposing
     , Weight
     , WorkoutSet
     , formatReps
+    , setToString
     , toWeightUnit
+    , updateWeightAmount
+    , updateWeightUnit
     , weightToString
     , weightUnitToString
-    , setToString
-    , updateWeightUnit
-    , updateWeightAmount
     )
 
 type WeightUnit

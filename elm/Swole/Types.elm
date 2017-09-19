@@ -2,6 +2,7 @@ module Swole.Types exposing
     ( WeightUnit (..)
     , Weight
     , WorkoutSet
+    , formatReps
     , toWeightUnit
     , weightToString
     , weightUnitToString
@@ -39,12 +40,12 @@ weightUnitToString unit = case unit of
     Pounds -> "lbs"
     Kilos -> "kgs"
 
+formatReps : List Int -> String
+formatReps reps = String.join " + " (List.map toString reps)
+
 setToString : WorkoutSet -> String
 setToString set =
-    let
-        reps = String.join " + " (List.map toString set.reps)
-    in
-       reps ++ " @ " ++ weightToString set.weight
+       formatReps set.reps ++ " @ " ++ weightToString set.weight
 
 updateWeightUnit : WorkoutSet -> WeightUnit -> WorkoutSet
 updateWeightUnit set unit =

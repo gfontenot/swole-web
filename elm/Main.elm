@@ -1,7 +1,8 @@
 module Main exposing (main)
 
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (type_, placeholder, value)
+import Html.Events exposing (onClick, onInput)
 import List.Extra as List
 
 import Swole.Components.SingleSet as SingleSet
@@ -12,14 +13,17 @@ type Msg
     = SingleSetMsg (Int, SingleSet.Msg)
     | AddSet
     | DeleteSet Int
+    | MovementsUpdated String
 
 type alias Model =
-    { setModels : List SingleSet.Model
+    { movements : List String
+    , setModels : List SingleSet.Model
     }
 
 initialModel : Model
 initialModel =
-    { setModels = [SingleSet.initialModel]
+    { movements = []
+    , setModels = [SingleSet.initialModel]
     }
 
 view : Model -> Html Msg
@@ -28,9 +32,20 @@ view model =
         sets = List.enumerated model.setModels
     in
         div []
-            [ ol [] (List.map viewSet sets)
+            [ movementsField model.movements
+            , ol [] (List.map viewSet sets)
             , button [ onClick AddSet ] [ text "Add set" ]
             ]
+
+movementsField : List String -> Html Msg
+movementsField movements =
+    input
+        [ type_ "text"
+        , placeholder "movements"
+        , value <| (String.join " + ") movements
+        , onInput MovementsUpdated
+        ]
+        []
 
 viewSet : (Int, SingleSet.Model) -> Html Msg
 viewSet (i, setModel) =
@@ -46,6 +61,8 @@ update msg model =
             { model | setModels = model.setModels ++ [SingleSet.initialModel] }
         DeleteSet i ->
             { model | setModels = List.removeAt i model.setModels }
+        MovementsUpdated ms ->
+            { model | movements = parseMovements ms }
 
         SingleSetMsg (i, m) ->
             let
@@ -60,6 +77,11 @@ update msg model =
 
             in
                { model | setModels = models }
+
+parseMovements : String -> List String
+parseMovements str
+    = String.split "+" str
+    |> List.map String.trim
 
 main : Program Never Model Msg
 main = beginnerProgram

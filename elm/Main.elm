@@ -8,22 +8,22 @@ import List.Extra as List
 import Swole.Components.SingleSet as SingleSet
 import Helpers.Maybe as Maybe
 import Helpers.List as List
-import Swole.Types exposing (parseScheme)
+import Swole.Types exposing (schemeLength)
 
 type Msg
     = SingleSetMsg (Int, SingleSet.Msg)
     | AddSet
     | DeleteSet Int
-    | MovementsUpdated String
+    | MovementSchemeUpdated String
 
 type alias Model =
-    { movements : List String
+    { movementScheme : String
     , setModels : List SingleSet.Model
     }
 
 initialModel : Model
 initialModel =
-    { movements = []
+    { movementScheme = ""
     , setModels = [SingleSet.initialModel 0]
     }
 
@@ -33,18 +33,18 @@ view model =
         sets = List.enumerated model.setModels
     in
         div []
-            [ movementsField model.movements
+            [ movementsField model.movementScheme
             , ol [] (List.map viewSet sets)
             , button [ onClick AddSet ] [ text "Add set" ]
             ]
 
-movementsField : List String -> Html Msg
-movementsField movements =
+movementsField : String -> Html Msg
+movementsField movementScheme =
     input
         [ type_ "text"
         , placeholder "movements"
-        , value <| (String.join " + ") movements
-        , onInput MovementsUpdated
+        , value <| movementScheme
+        , onInput MovementSchemeUpdated
         ]
         []
 
@@ -60,19 +60,18 @@ update msg model =
     case msg of
         AddSet ->
             let
-                count = List.length model.movements
+                count = schemeLength model.movementScheme
             in
                 { model | setModels = model.setModels ++ [SingleSet.initialModel count] }
         DeleteSet i ->
             { model | setModels = List.removeAt i model.setModels }
-        MovementsUpdated ms ->
+        MovementSchemeUpdated ms ->
             let
-                movements = parseScheme ms
-                count = List.length movements
+                count = schemeLength ms
                 setModels = model.setModels
                     |> List.map (SingleSet.update (SingleSet.MovementCountUpdated count))
             in
-                { model | movements = movements, setModels = setModels }
+                { model | movementScheme = ms, setModels = setModels }
 
         SingleSetMsg (i, m) ->
             let

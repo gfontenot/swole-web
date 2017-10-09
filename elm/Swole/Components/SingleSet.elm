@@ -19,14 +19,16 @@ type Msg
     | WeightUnitUpdated WeightUnit
 
 type alias Model =
-    { reps : String
+    { movementCount: Int
+    , reps : String
     , weightAmount : String
     , weightUnit : WeightUnit
     }
 
-initialModel : Model
-initialModel =
-    { reps = ""
+initialModel : Int -> Model
+initialModel count =
+    { movementCount = count
+    , reps = ""
     , weightAmount = ""
     , weightUnit = Kilos
     }

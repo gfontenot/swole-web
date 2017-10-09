@@ -23,7 +23,7 @@ type alias Model =
 initialModel : Model
 initialModel =
     { movements = []
-    , setModels = [SingleSet.initialModel]
+    , setModels = [SingleSet.initialModel 0]
     }
 
 view : Model -> Html Msg
@@ -58,7 +58,10 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         AddSet ->
-            { model | setModels = model.setModels ++ [SingleSet.initialModel] }
+            let
+                count = List.length model.movements
+            in
+                { model | setModels = model.setModels ++ [SingleSet.initialModel count] }
         DeleteSet i ->
             { model | setModels = List.removeAt i model.setModels }
         MovementsUpdated ms ->

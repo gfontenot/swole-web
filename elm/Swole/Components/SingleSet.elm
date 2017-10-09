@@ -24,6 +24,7 @@ type alias Model =
     , reps : String
     , weightAmount : String
     , weightUnit : WeightUnit
+    , validRepScheme : Bool
     }
 
 initialModel : Int -> Model
@@ -32,25 +33,32 @@ initialModel count =
     , reps = ""
     , weightAmount = ""
     , weightUnit = Kilos
+    , validRepScheme = True
     }
 
 view : Model -> Html Msg
 view model =
     div []
-        [ repsField model.reps
+        [ repsField model.reps model.validRepScheme
         , weightField model.weightAmount
         , weightUnitPicker model.weightUnit
         ]
 
-repsField : String -> Html Msg
-repsField v =
+repsField : String -> Bool -> Html Msg
+repsField val valid =
     input
         [ type_ "text"
         , placeholder "reps"
-        , value v
+        , value val
         , onInput RepsUpdated
+        , validClass valid
         ]
         []
+
+validClass : Bool -> Attribute Msg
+validClass valid = case valid of
+    True -> class "valid"
+    False -> class "invalid"
 
 weightField : String -> Html Msg
 weightField v =
@@ -81,13 +89,25 @@ unitOption current unit =
 update : Msg -> Model -> Model
 update msg model = case msg of
     RepsUpdated str ->
-        { model | reps = str }
+        validate { model | reps = str }
     WeightUpdated str ->
         { model | weightAmount = str }
     WeightUnitUpdated unit ->
         { model | weightUnit = unit }
     MovementCountUpdated count ->
         validate { model | movementCount = count }
+
+validate : Model -> Model
+validate model =
+    let
+        repCount = model.reps
+            |> String.split "+"
+            |> List.length
+
+        validRepScheme = repCount == model.movementCount
+
+    in
+       { model | validRepScheme = validRepScheme }
 
 parseUnit : String -> WeightUnit
 parseUnit str

@@ -10,89 +10,79 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
-import Swole.Types exposing (..)
+import Swole.Types exposing (WeightUnit(..), toWeightUnit)
 import Helpers.Events exposing (onChange)
 
 type Msg
     = RepsUpdated String
-    | WeightUpdated Int
+    | WeightUpdated String
     | WeightUnitUpdated WeightUnit
 
-type alias Model = WorkoutSet
+type alias Model =
+    { reps : String
+    , weightAmount : String
+    , weightUnit : WeightUnit
+    }
 
 initialModel : Model
 initialModel =
-    { reps = []
-    , weight =
-        { amount = 0
-        , unit = Kilos
-        }
+    { reps = ""
+    , weightAmount = ""
+    , weightUnit = Kilos
     }
 
 view : Model -> Html Msg
-view set =
+view model =
     div []
-        [ repsField set.reps
-        , weightField set.weight
-        , weightUnitPicker set.weight
-        , text <| setToString set
+        [ repsField model.reps
+        , weightField model.weightAmount
+        , weightUnitPicker model.weightUnit
         ]
 
-repsField : List Int -> Html Msg
-repsField reps =
+repsField : String -> Html Msg
+repsField v =
     input
         [ type_ "text"
         , placeholder "reps"
-        , value (formatReps reps)
+        , value v
         , onInput RepsUpdated
         ]
         []
 
-weightField : Weight -> Html Msg
-weightField weight =
+weightField : String -> Html Msg
+weightField v =
     input
         [ type_ "text"
         , placeholder "weight"
-        , value (toString weight.amount)
-        , onInput (WeightUpdated << parseInt)
+        , value v
+        , onInput WeightUpdated
         ]
         []
 
-weightUnitPicker : Weight -> Html Msg
-weightUnitPicker weight =
+weightUnitPicker : WeightUnit -> Html Msg
+weightUnitPicker unit =
     select
         [ onChange (WeightUnitUpdated << parseUnit) ]
-        [ unitOption weight Pounds
-        , unitOption weight Kilos
+        [ unitOption unit Pounds
+        , unitOption unit Kilos
         ]
 
-unitOption : Weight -> WeightUnit -> Html Msg
+unitOption : WeightUnit -> WeightUnit -> Html Msg
 unitOption current unit =
     option
         [ value <| toString unit
-        , selected <| current.unit == unit
+        , selected <| current == unit
         ]
         [ text <| toString unit ]
 
 update : Msg -> Model -> Model
-update msg set = case msg of
+update msg model = case msg of
     RepsUpdated str ->
-        { set | reps = parseReps str }
-    WeightUpdated n ->
-        updateWeightAmount set n
+        { model | reps = str }
+    WeightUpdated str ->
+        { model | weightAmount = str }
     WeightUnitUpdated unit ->
-        updateWeightUnit set unit
-
-parseReps : String -> List Int
-parseReps str
-    =  String.split "+" str
-    |> List.map String.trim
-    |> List.map parseInt
-
-parseInt : String -> Int
-parseInt s
-    = String.toInt s
-    |> Result.withDefault 0
+        { model | weightUnit = unit }
 
 parseUnit : String -> WeightUnit
 parseUnit str

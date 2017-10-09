@@ -19,14 +19,14 @@ import Swole.Types exposing
     )
 
 type Msg
-    = RepsUpdated String
+    = RepSchemeUpdated String
     | WeightUpdated String
     | WeightUnitUpdated WeightUnit
     | MovementCountUpdated Int
 
 type alias Model =
     { movementCount: Int
-    , reps : String
+    , repScheme : String
     , weightAmount : String
     , weightUnit : WeightUnit
     , validRepScheme : Bool
@@ -35,7 +35,7 @@ type alias Model =
 initialModel : Int -> Model
 initialModel count =
     { movementCount = count
-    , reps = ""
+    , repScheme = ""
     , weightAmount = ""
     , weightUnit = Kilos
     , validRepScheme = True
@@ -44,7 +44,7 @@ initialModel count =
 view : Model -> Html Msg
 view model =
     div []
-        [ repsField model.reps model.validRepScheme
+        [ repsField model.repScheme model.validRepScheme
         , weightField model.weightAmount
         , weightUnitPicker model.weightUnit
         ]
@@ -55,7 +55,7 @@ repsField val valid =
         [ type_ "text"
         , placeholder "reps"
         , value val
-        , onInput RepsUpdated
+        , onInput RepSchemeUpdated
         , validClass valid
         ]
         []
@@ -93,8 +93,8 @@ unitOption current unit =
 
 update : Msg -> Model -> Model
 update msg model = case msg of
-    RepsUpdated str ->
-        validate { model | reps = str }
+    RepSchemeUpdated str ->
+        validate { model | repScheme = str }
     WeightUpdated str ->
         { model | weightAmount = str }
     WeightUnitUpdated unit ->
@@ -105,7 +105,7 @@ update msg model = case msg of
 validate : Model -> Model
 validate model =
     let
-        repCount = schemeLength model.reps
+        repCount = schemeLength model.repScheme
         validRepScheme = repCount == model.movementCount
 
     in

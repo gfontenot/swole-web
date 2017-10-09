@@ -1,5 +1,5 @@
 module Swole.Components.SingleSet exposing
-    ( Msg
+    ( Msg(..)
     , Model
     , view
     , update
@@ -17,6 +17,7 @@ type Msg
     = RepsUpdated String
     | WeightUpdated String
     | WeightUnitUpdated WeightUnit
+    | MovementCountUpdated Int
 
 type alias Model =
     { movementCount: Int
@@ -85,6 +86,8 @@ update msg model = case msg of
         { model | weightAmount = str }
     WeightUnitUpdated unit ->
         { model | weightUnit = unit }
+    MovementCountUpdated count ->
+        validate { model | movementCount = count }
 
 parseUnit : String -> WeightUnit
 parseUnit str

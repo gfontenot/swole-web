@@ -65,7 +65,13 @@ update msg model =
         DeleteSet i ->
             { model | setModels = List.removeAt i model.setModels }
         MovementsUpdated ms ->
-            { model | movements = parseMovements ms }
+            let
+                movements = parseMovements ms
+                count = List.length movements
+                setModels = model.setModels
+                    |> List.map (SingleSet.update (SingleSet.MovementCountUpdated count))
+            in
+                { model | movements = movements, setModels = setModels }
 
         SingleSetMsg (i, m) ->
             let

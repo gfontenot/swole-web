@@ -10,8 +10,13 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
-import Swole.Types exposing (WeightUnit(..), toWeightUnit, parseScheme)
 import Helpers.Events exposing (onChange)
+import Swole.Types exposing
+    ( WeightUnit(..)
+    , toWeightUnit
+    , parseScheme
+    , schemeLength
+    )
 
 type Msg
     = RepsUpdated String
@@ -100,9 +105,7 @@ update msg model = case msg of
 validate : Model -> Model
 validate model =
     let
-        repCount = parseScheme model.reps
-            |> List.length
-
+        repCount = schemeLength model.reps
         validRepScheme = repCount == model.movementCount
 
     in

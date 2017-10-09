@@ -4,6 +4,7 @@ module Swole.Types exposing
     , WorkoutSet
     , formatReps
     , parseScheme
+    , schemeLength
     , setToString
     , toWeightUnit
     , updateWeightAmount
@@ -30,6 +31,11 @@ parseScheme : String -> List String
 parseScheme str
     = String.split "+" str
     |> List.map String.trim
+
+schemeLength : String -> Int
+schemeLength str
+    = parseScheme str
+    |> List.length
 
 toWeightUnit : String -> Result String WeightUnit
 toWeightUnit str = case str of

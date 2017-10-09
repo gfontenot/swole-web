@@ -8,6 +8,7 @@ import List.Extra as List
 import Swole.Components.SingleSet as SingleSet
 import Helpers.Maybe as Maybe
 import Helpers.List as List
+import Swole.Types exposing (parseScheme)
 
 type Msg
     = SingleSetMsg (Int, SingleSet.Msg)
@@ -66,7 +67,7 @@ update msg model =
             { model | setModels = List.removeAt i model.setModels }
         MovementsUpdated ms ->
             let
-                movements = parseMovements ms
+                movements = parseScheme ms
                 count = List.length movements
                 setModels = model.setModels
                     |> List.map (SingleSet.update (SingleSet.MovementCountUpdated count))
@@ -86,11 +87,6 @@ update msg model =
 
             in
                { model | setModels = models }
-
-parseMovements : String -> List String
-parseMovements str
-    = String.split "+" str
-    |> List.map String.trim
 
 main : Program Never Model Msg
 main = beginnerProgram

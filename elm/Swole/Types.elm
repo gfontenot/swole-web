@@ -3,6 +3,7 @@ module Swole.Types exposing
     , Weight
     , WorkoutSet
     , formatReps
+    , parseScheme
     , setToString
     , toWeightUnit
     , updateWeightAmount
@@ -24,6 +25,11 @@ type alias WorkoutSet =
     { reps : List Int
     , weight : Weight
     }
+
+parseScheme : String -> List String
+parseScheme str
+    = String.split "+" str
+    |> List.map String.trim
 
 toWeightUnit : String -> Result String WeightUnit
 toWeightUnit str = case str of

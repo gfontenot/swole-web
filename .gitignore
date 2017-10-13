@@ -1,21 +1,32 @@
-dist*
-docker/build
-static/tmp/
-static/combined/
-*.hi
-*.o
-*.sqlite3
-*.sqlite3-shm
-*.sqlite3-wal
-.hsenv*
-cabal-dev/
-.stack-work/
-yesod-devel/
-.cabal-sandbox
-cabal.sandbox.config
-.DS_Store
-*.swp
-*.keter
-.sass-cache/
+# App artifacts
+_build
+db
+deps
+*.ez
 .env
-elm-stuff
+
+# Generated on crash by the VM
+erl_crash.dump
+
+# Static artifacts
+node_modules
+npm-debug.log*
+
+# Since we are building assets from web/static,
+# we ignore priv/static. You may want to comment
+# this depending on your deployment strategy.
+priv/static/
+
+# We store uploaded images in /uploads
+uploads
+
+# The config/prod.secret.exs file by default contains sensitive
+# data and you should not commit it into version control.
+#
+# Alternatively, you may comment the line below and commit the
+# secrets file as long as you replace its contents by environment
+# variables.
+config/prod.secret.exs
+
+# Elm
+elm-stuff/

@@ -37,13 +37,18 @@ exports.config = {
   // Phoenix paths configuration
   paths: {
     // Dependencies and current project directories to watch
-    watched: ["static", "css", "js", "vendor"],
+    watched: ["static", "css", "js", "vendor", "../lib/swole_elm"],
     // Where to compile files to
     public: "../priv/static"
   },
 
   // Configure your plugins
   plugins: {
+    elmBrunch: {
+      elmFolder: "../lib/swole_elm",
+      mainModules: ["Main.elm"],
+      outputFolder: "../../assets/vendor"
+    },
     babel: {
       // Do not use ES6 compiler in vendor code
       ignore: [/vendor/]

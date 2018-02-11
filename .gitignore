@@ -30,3 +30,4 @@ config/prod.secret.exs
 
 # Elm
 elm-stuff/
+assets/vendor/

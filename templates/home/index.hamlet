@@ -1,6 +1,0 @@
-<div .container>
-  <p> Hello World!
-
-<form method=post action=@{HomeR} enctype=#{enctype}>
-  ^{form}
-  <button #submit>Submit!

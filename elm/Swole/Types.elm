@@ -1,26 +1,16 @@
 module Swole.Types exposing
-    ( WeightUnit (..)
-    , Weight
-    , WorkoutSet
+    ( WorkoutSet
     , formatReps
     , parseScheme
     , schemeLength
     , setToString
-    , toWeightUnit
     , updateWeightAmount
     , updateWeightUnit
     , weightToString
     , weightUnitToString
     )
 
-type WeightUnit
-    = Pounds
-    | Kilos
-
-type alias Weight =
-    { amount : Int
-    , unit : WeightUnit
-    }
+import Swole.Types.Weight exposing (Weight, WeightUnit(..))
 
 type alias WorkoutSet =
     { reps : List Int
@@ -36,12 +26,6 @@ schemeLength : String -> Int
 schemeLength str
     = parseScheme str
     |> List.length
-
-toWeightUnit : String -> Result String WeightUnit
-toWeightUnit str = case str of
-    "Pounds" -> Ok Pounds
-    "Kilos" -> Ok Kilos
-    _ -> Err ("Not a valid weight unit: " ++ str)
 
 weightToString : Weight -> String
 weightToString weight =

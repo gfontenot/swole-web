@@ -10,10 +10,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
-import Swole.Types exposing
-    ( parseScheme
-    , schemeLength
-    )
+import Swole.Types exposing (schemeLength)
 import Swole.Types.Weight exposing (Weight, WeightUnit(..))
 import Swole.Components.Weight as WeightComponent
 

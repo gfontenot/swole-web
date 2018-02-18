@@ -18,29 +18,33 @@ import Html.Events exposing (onInput)
 import Helpers.Events exposing (onChange)
 
 import Swole.Types.Weight exposing
-    ( Weight
-    , WeightUnit(..)
-    , toWeightUnit
+    ( Weight(..)
+    , availableWeightUnits
+    , hasUnit
+    , setAmount
+    , setUnit
+    , toWeightConstructor
+    , weightAmount
     )
 
 type Msg
     = AmountChanged Int
-    | UnitChanged WeightUnit
+    | UnitChanged (Int -> Weight)
 
 view : Weight -> Html Msg
 view weight =
     div []
-        [ amountField weight.amount
-        , unitPicker weight.unit
+        [ amountField <| weightAmount weight
+        , unitPicker weight
         ]
 
 update : Msg -> Weight -> Weight
 update msg weight = case msg of
     AmountChanged amount ->
-        { weight | amount = amount }
+        setAmount weight amount
 
-    UnitChanged unit ->
-        { weight | unit = unit }
+    UnitChanged newUnit ->
+        setUnit weight newUnit
 
 amountField : Int -> Html Msg
 amountField v =
@@ -52,28 +56,26 @@ amountField v =
         ]
         []
 
-unitPicker : WeightUnit -> Html Msg
-unitPicker unit =
+unitPicker : Weight -> Html Msg
+unitPicker weight =
     select
         [ onChange (UnitChanged << parseUnit) ]
-        [ unitOption unit Pounds
-        , unitOption unit Kilos
-        ]
+        (List.map (unitOption weight) availableWeightUnits)
 
-unitOption : WeightUnit -> WeightUnit -> Html Msg
-unitOption current unit =
+unitOption : Weight -> String -> Html Msg
+unitOption weight unit =
     option
-        [ value <| toString unit
-        , selected <| current == unit
+        [ value unit
+        , selected <| hasUnit weight unit
         ]
-        [ text <| toString unit ]
+        [ text unit ]
 
 parseAmount : String -> Int
 parseAmount str
     = String.toInt str
     |> Result.withDefault 0
 
-parseUnit : String -> WeightUnit
+parseUnit : String -> (Int -> Weight)
 parseUnit str
-    = toWeightUnit str
+    = toWeightConstructor str
     |> Result.withDefault Kilos

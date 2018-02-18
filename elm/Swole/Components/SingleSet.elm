@@ -11,7 +11,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
 import Swole.Types exposing (schemeLength)
-import Swole.Types.Weight exposing (Weight, WeightUnit(..))
+import Swole.Types.Weight exposing (Weight(..))
 import Swole.Components.Weight as WeightComponent
 
 type Msg
@@ -30,10 +30,7 @@ initialModel : Int -> Model
 initialModel count =
     { movementCount = count
     , repScheme = ""
-    , weight =
-        { amount = 0
-        , unit = Kilos
-        }
+    , weight = Kilos 0
     , validRepScheme = True
     }
 

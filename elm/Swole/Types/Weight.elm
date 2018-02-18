@@ -1,5 +1,6 @@
 module Swole.Types.Weight exposing
     ( Weight(..)
+    , WeightUnit
     , availableWeightUnits
     , hasUnit
     , setAmount
@@ -8,11 +9,13 @@ module Swole.Types.Weight exposing
     , weightAmount
     )
 
+type alias WeightUnit = Int -> Weight
+
 type Weight
     = Pounds Int
     | Kilos Int
 
-toWeightConstructor : String -> Result String (Int -> Weight)
+toWeightConstructor : String -> Result String WeightUnit
 toWeightConstructor str = case str of
     "Pounds" -> Ok Pounds
     "Kilos" -> Ok Kilos
@@ -29,7 +32,7 @@ setAmount weight amount = case weight of
     Kilos _ -> Kilos amount
     Pounds _ -> Pounds amount
 
-setUnit : Weight -> (Int -> Weight) -> Weight
+setUnit : Weight -> WeightUnit -> Weight
 setUnit weight newUnit = case weight of
     Kilos amount -> newUnit amount
     Pounds amount -> newUnit amount

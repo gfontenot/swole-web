@@ -19,6 +19,7 @@ import Helpers.Events exposing (onChange)
 
 import Swole.Types.Weight exposing
     ( Weight(..)
+    , WeightUnit
     , availableWeightUnits
     , hasUnit
     , setAmount
@@ -29,7 +30,7 @@ import Swole.Types.Weight exposing
 
 type Msg
     = AmountChanged Int
-    | UnitChanged (Int -> Weight)
+    | UnitChanged WeightUnit
 
 view : Weight -> Html Msg
 view weight =
@@ -75,7 +76,7 @@ parseAmount str
     = String.toInt str
     |> Result.withDefault 0
 
-parseUnit : String -> (Int -> Weight)
+parseUnit : String -> WeightUnit
 parseUnit str
     = toWeightConstructor str
     |> Result.withDefault Kilos

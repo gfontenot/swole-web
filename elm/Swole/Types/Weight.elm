@@ -21,11 +21,13 @@ toWeightConstructor str = case str of
     "Kilos" -> Ok Kilos
     _ -> Err ("Not a valid weight unit: " ++ str)
 
+unitToString : Weight -> String
+unitToString weight = case weight of
+    Kilos _ -> "Kilos"
+    Pounds _ -> "Pounds"
+
 availableWeightUnits : List String
-availableWeightUnits =
-    [ "Pounds"
-    , "Kilos"
-    ]
+availableWeightUnits = List.map unitToString [Pounds 0, Kilos 0]
 
 setAmount : Weight -> Int -> Weight
 setAmount weight amount = case weight of
@@ -41,11 +43,6 @@ weightAmount : Weight -> Int
 weightAmount weight = case weight of
     Kilos n -> n
     Pounds n -> n
-
-unitToString : Weight -> String
-unitToString weight = case weight of
-    Kilos _ -> "Kilos"
-    Pounds _ -> "Pounds"
 
 hasUnit : Weight -> String -> Bool
 hasUnit weight unit = unitToString weight == unit

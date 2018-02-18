@@ -17,16 +17,7 @@ import Html.Attributes exposing (placeholder, selected, type_, value)
 import Html.Events exposing (onInput)
 import Helpers.Events exposing (onChange)
 
-import Swole.Types.Weight exposing
-    ( Weight(..)
-    , WeightUnit
-    , availableWeightUnits
-    , hasUnit
-    , setAmount
-    , setUnit
-    , toWeightConstructor
-    , weightAmount
-    )
+import Swole.Types.Weight as Weight exposing (Weight(..), WeightUnit)
 
 type Msg
     = AmountChanged Int
@@ -35,17 +26,17 @@ type Msg
 view : Weight -> Html Msg
 view weight =
     div []
-        [ amountField <| weightAmount weight
+        [ amountField <| Weight.amount weight
         , unitPicker weight
         ]
 
 update : Msg -> Weight -> Weight
 update msg weight = case msg of
     AmountChanged amount ->
-        setAmount weight amount
+        Weight.setAmount weight amount
 
     UnitChanged newUnit ->
-        setUnit weight newUnit
+        Weight.setUnit weight newUnit
 
 amountField : Int -> Html Msg
 amountField v =
@@ -61,13 +52,13 @@ unitPicker : Weight -> Html Msg
 unitPicker weight =
     select
         [ onChange (UnitChanged << parseUnit) ]
-        (List.map (unitOption weight) availableWeightUnits)
+        (List.map (unitOption weight) Weight.availableUnits)
 
 unitOption : Weight -> String -> Html Msg
 unitOption weight unit =
     option
         [ value unit
-        , selected <| hasUnit weight unit
+        , selected <| Weight.hasUnit weight unit
         ]
         [ text unit ]
 
@@ -78,5 +69,5 @@ parseAmount str
 
 parseUnit : String -> WeightUnit
 parseUnit str
-    = toWeightConstructor str
+    = Weight.toUnit str
     |> Result.withDefault Kilos

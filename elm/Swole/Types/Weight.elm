@@ -1,12 +1,12 @@
 module Swole.Types.Weight exposing
     ( Weight(..)
     , WeightUnit
-    , availableWeightUnits
+    , availableUnits
     , hasUnit
     , setAmount
     , setUnit
-    , toWeightConstructor
-    , weightAmount
+    , toUnit
+    , amount
     )
 
 type alias WeightUnit = Int -> Weight
@@ -15,8 +15,8 @@ type Weight
     = Pounds Int
     | Kilos Int
 
-toWeightConstructor : String -> Result String WeightUnit
-toWeightConstructor str = case str of
+toUnit : String -> Result String WeightUnit
+toUnit str = case str of
     "Pounds" -> Ok Pounds
     "Kilos" -> Ok Kilos
     _ -> Err ("Not a valid weight unit: " ++ str)
@@ -26,8 +26,8 @@ unitToString weight = case weight of
     Kilos _ -> "Kilos"
     Pounds _ -> "Pounds"
 
-availableWeightUnits : List String
-availableWeightUnits = List.map unitToString [Pounds 0, Kilos 0]
+availableUnits : List String
+availableUnits = List.map unitToString [Pounds 0, Kilos 0]
 
 setAmount : Weight -> Int -> Weight
 setAmount weight amount = case weight of
@@ -39,8 +39,8 @@ setUnit weight newUnit = case weight of
     Kilos amount -> newUnit amount
     Pounds amount -> newUnit amount
 
-weightAmount : Weight -> Int
-weightAmount weight = case weight of
+amount : Weight -> Int
+amount weight = case weight of
     Kilos n -> n
     Pounds n -> n
 

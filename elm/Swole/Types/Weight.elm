@@ -3,11 +3,12 @@ module Swole.Types.Weight exposing
     , WeightUnit
     , availableUnits
     , hasUnit
-    , setAmount
-    , setUnit
     , toUnit
-    , amount
+    , weightAmount
+    , weightUnit
     )
+
+import Lens exposing (Lens)
 
 type alias WeightUnit = Int -> Weight
 
@@ -29,20 +30,31 @@ unitToString weight = case weight of
 availableUnits : List String
 availableUnits = List.map unitToString [Pounds 0, Kilos 0]
 
-setAmount : Weight -> Int -> Weight
-setAmount weight amount = case weight of
-    Kilos _ -> Kilos amount
-    Pounds _ -> Pounds amount
+weightUnit : Lens Weight WeightUnit
+weightUnit =
+    let
+        get weight = case weight of
+            Kilos _ -> Kilos
+            Pounds _ -> Pounds
 
-setUnit : Weight -> WeightUnit -> Weight
-setUnit weight newUnit = case weight of
-    Kilos amount -> newUnit amount
-    Pounds amount -> newUnit amount
+        set unit weight = case weight of
+            Kilos amt -> unit amt
+            Pounds amt -> unit amt
+    in
+       Lens get set
 
-amount : Weight -> Int
-amount weight = case weight of
-    Kilos n -> n
-    Pounds n -> n
+weightAmount : Lens Weight Int
+weightAmount =
+    let
+        get weight = case weight of
+            Kilos amt -> amt
+            Pounds amt -> amt
+
+        set amt weight = case weight of
+            Kilos _ -> Kilos amt
+            Pounds _ -> Pounds amt
+    in
+       Lens get set
 
 hasUnit : Weight -> String -> Bool
 hasUnit weight unit = unitToString weight == unit

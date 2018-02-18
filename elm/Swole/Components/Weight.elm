@@ -17,7 +17,12 @@ import Html.Attributes exposing (placeholder, selected, type_, value)
 import Html.Events exposing (onInput)
 import Helpers.Events exposing (onChange)
 
-import Swole.Types.Weight as Weight exposing (Weight(..), WeightUnit)
+import Swole.Types.Weight as Weight exposing
+    ( Weight(..)
+    , WeightUnit
+    , weightAmount
+    , weightUnit
+    )
 
 type Msg
     = AmountChanged Int
@@ -26,17 +31,17 @@ type Msg
 view : Weight -> Html Msg
 view weight =
     div []
-        [ amountField <| Weight.amount weight
+        [ amountField <| weightAmount.get weight
         , unitPicker weight
         ]
 
 update : Msg -> Weight -> Weight
 update msg weight = case msg of
-    AmountChanged amount ->
-        Weight.setAmount weight amount
+    AmountChanged amt ->
+        weightAmount.set amt weight
 
     UnitChanged newUnit ->
-        Weight.setUnit weight newUnit
+        weightUnit.set newUnit weight
 
 amountField : Int -> Html Msg
 amountField v =

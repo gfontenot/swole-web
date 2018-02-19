@@ -6,24 +6,23 @@ import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onInput)
 
 type alias Movement = String
-
-type alias Model = List Movement
+type alias Movements = List Movement
 
 type Msg
     = MovementChanged Movement
 
-view : Model -> Html Msg
-view model =
+view : Movements -> Html Msg
+view movements =
     div []
-        (movementFields model)
+        (movementFields movements)
 
-update : Msg -> Model -> Model
-update msg model =
+update : Msg -> Movements -> Movements
+update msg movements =
     case msg of
         MovementChanged m -> splitMovements m
 
-movementFields : List Movement -> List (Html Msg)
-movementFields model = case model of
+movementFields : Movements -> List (Html Msg)
+movementFields movements = case movements of
     [] -> [movementField ""]
     ms -> List.map movementField ms
 
@@ -37,13 +36,13 @@ movementField movement =
         ]
         []
 
-splitMovements : Movement -> List Movement
+splitMovements : Movement -> Movements
 splitMovements str
     = str
     |> String.split "+"
     |> List.map String.trim
 
-main : Program Never Model Msg
+main : Program Never Movements Msg
 main = beginnerProgram
     { model = []
     , view = view

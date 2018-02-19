@@ -1,7 +1,7 @@
 module Swole.Components.MovementInput exposing
     ( main )
 
-import Html exposing (Html, beginnerProgram, div, input)
+import Html exposing (Html, beginnerProgram, div, input, text)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onInput)
 
@@ -24,7 +24,8 @@ update msg movements =
 movementFields : Movements -> List (Html Msg)
 movementFields movements = case movements of
     [] -> [movementField ""]
-    ms -> List.map movementField ms
+    ms ->
+        List.intersperse (text "+") (List.map movementField ms)
 
 movementField : Movement -> Html Msg
 movementField movement =

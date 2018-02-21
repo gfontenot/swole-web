@@ -1,9 +1,11 @@
 module Swole.Components.MovementInput exposing
     ( main )
 
-import Html exposing (Html, beginnerProgram, div, input, text, button)
-import Html.Attributes exposing (placeholder, type_, value)
+import Html exposing (Html, program, div, input, text, button)
+import Html.Attributes exposing (placeholder, type_, value, id)
 import Html.Events exposing (onClick, onInput)
+import Task
+import Dom exposing (focus)
 import List.Extra as List
 
 import Helpers.List as List
@@ -14,28 +16,33 @@ type alias Movements = List (Int, Movement)
 type Msg
     = MovementChanged (Int, Movement)
     | AddMovement
+    | FocusedField
 
 view : Movements -> Html Msg
 view movements =
     div []
         (movementFields movements)
 
-update : Msg -> Movements -> Movements
+update : Msg -> Movements -> (Movements, Cmd Msg)
 update msg movements =
     case msg of
         MovementChanged (idx, m) ->
             let
-                newMovements = splitMovements m
+                (newIdx, newMovements) = splitMovements (idx, m)
                 (before, after) = movementsAround idx movements
                 allMovements = before ++ newMovements ++ after
             in
-                List.enumerated allMovements
+                (List.enumerated allMovements, updateFocus newIdx)
 
         AddMovement ->
             let
                 rawMovements = List.map Tuple.second movements
+                idx = List.length rawMovements
             in
-                List.enumerated <| rawMovements ++ [""]
+                (List.enumerated <| rawMovements ++ [""], updateFocus idx)
+
+        FocusedField ->
+            (movements, Cmd.none)
 
 movementsAround : Int -> Movements -> (List Movement, List Movement)
 movementsAround idx movements
@@ -43,6 +50,16 @@ movementsAround idx movements
     |> List.map Tuple.second
     |> List.splitAt idx
     |> Tuple.mapSecond (List.drop 1)
+
+updateFocus : Int -> Cmd Msg
+updateFocus idx =
+    let
+        checkFocus : Result Dom.Error () -> Msg
+        checkFocus result = case result of
+            Ok _ -> FocusedField
+            Err _ -> FocusedField
+    in
+        Task.attempt checkFocus (Dom.focus <| "movement-" ++ toString idx)
 
 movementFields : Movements -> List (Html Msg)
 movementFields movements = case movements of
@@ -64,19 +81,22 @@ movementField (idx, movement) =
         [ type_ "text"
         , placeholder "movement"
         , value <| movement
+        , id ("movement-" ++ toString idx)
         , onInput (\m -> MovementChanged (idx, m))
         ]
         []
 
-splitMovements : Movement -> Movements
-splitMovements str
+splitMovements : (Int, Movement) -> (Int, List Movement)
+splitMovements (idx, str)
     = str
     |> String.split "+"
     |> List.map String.trim
+    |> \ms -> ((idx + List.length ms - 1), ms)
 
 main : Program Never Movements Msg
-main = beginnerProgram
-    { model = []
-    , view = view
+main = program
+    { init = ([], Cmd.none)
     , update = update
+    , subscriptions = (always Sub.none)
+    , view = view
     }

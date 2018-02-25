@@ -9,6 +9,7 @@ import Dom exposing (focus)
 import List.Extra as List
 
 import Helpers.List as List
+import Helpers.Events exposing (onDeleteEmpty)
 
 type alias Movement = String
 type alias Movements = List (Int, Movement)
@@ -16,6 +17,7 @@ type alias Movements = List (Int, Movement)
 type Msg
     = MovementChanged (Int, Movement)
     | AddMovement
+    | DeleteMovement Int
     | FocusedField
 
 view : Movements -> Html Msg
@@ -40,6 +42,17 @@ update msg movements =
                 idx = List.length rawMovements
             in
                 (List.enumerated <| rawMovements ++ [""], updateFocus idx)
+
+        DeleteMovement idx ->
+            let
+                newMovements
+                    = movements
+                    |> List.map Tuple.second
+                    |> List.removeAt idx
+
+                newIdx = max 0 (idx - 1)
+            in
+               (List.enumerated newMovements, updateFocus newIdx)
 
         FocusedField ->
             (movements, Cmd.none)
@@ -80,9 +93,10 @@ movementField (idx, movement) =
     input
         [ type_ "text"
         , placeholder "movement"
-        , value <| movement
-        , id ("movement-" ++ toString idx)
-        , onInput (\m -> MovementChanged (idx, m))
+        , value movement
+        , id <| "movement-" ++ toString idx
+        , onInput <| \m -> MovementChanged (idx, m)
+        , onDeleteEmpty movement <| DeleteMovement idx
         ]
         []
 

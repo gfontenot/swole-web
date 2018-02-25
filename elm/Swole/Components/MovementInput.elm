@@ -1,5 +1,9 @@
 module Swole.Components.MovementInput exposing
-    ( main )
+    ( Msg
+    , Model
+    , view
+    , update
+    )
 
 import Html exposing (Html, program, div, input, text, button)
 import Html.Attributes exposing (placeholder, type_, value, id)
@@ -13,6 +17,7 @@ import Helpers.Events exposing (onDeleteEmpty)
 import Swole.Types.Movement exposing (Movement)
 
 type alias Movements = List (Int, Movement)
+type alias Model = Movements
 
 type Msg
     = MovementChanged (Int, Movement)

@@ -1,29 +1,28 @@
 module Main exposing (main)
 
 import Html exposing (..)
-import Html.Attributes exposing (type_, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 import List.Extra as List
 
+import Swole.Components.MovementInput as MovementInput
 import Swole.Components.SingleSet as SingleSet
 import Helpers.Maybe as Maybe
 import Helpers.List as List
-import Swole.Types exposing (schemeLength)
 
 type Msg
-    = SingleSetMsg (Int, SingleSet.Msg)
+    = MovementInputMsg MovementInput.Msg
+    | SingleSetMsg (Int, SingleSet.Msg)
     | AddSet
     | DeleteSet Int
-    | MovementSchemeUpdated String
 
 type alias Model =
-    { movementScheme : String
+    { movements : MovementInput.Model
     , setModels : List SingleSet.Model
     }
 
 initialModel : Model
 initialModel =
-    { movementScheme = ""
+    { movements = []
     , setModels = [SingleSet.initialModel 0]
     }
 
@@ -33,20 +32,10 @@ view model =
         sets = List.enumerated model.setModels
     in
         div []
-            [ movementsField model.movementScheme
+            [ map MovementInputMsg <| MovementInput.view model.movements
             , ol [] (List.map viewSet sets)
             , button [ onClick AddSet ] [ text "Add set" ]
             ]
-
-movementsField : String -> Html Msg
-movementsField movementScheme =
-    input
-        [ type_ "text"
-        , placeholder "movements"
-        , value <| movementScheme
-        , onInput MovementSchemeUpdated
-        ]
-        []
 
 viewSet : (Int, SingleSet.Model) -> Html Msg
 viewSet (i, setModel) =
@@ -55,24 +44,9 @@ viewSet (i, setModel) =
         , button [onClick (DeleteSet i)] [ text "Delete" ]
         ]
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        AddSet ->
-            let
-                count = schemeLength model.movementScheme
-            in
-                { model | setModels = model.setModels ++ [SingleSet.initialModel count] }
-        DeleteSet i ->
-            { model | setModels = List.removeAt i model.setModels }
-        MovementSchemeUpdated ms ->
-            let
-                count = schemeLength ms
-                setModels = model.setModels
-                    |> List.map (SingleSet.update (SingleSet.MovementCountUpdated count))
-            in
-                { model | movementScheme = ms, setModels = setModels }
-
         SingleSetMsg (i, m) ->
             let
                 updated
@@ -85,11 +59,32 @@ update msg model =
                     |> Maybe.fromJust
 
             in
-               { model | setModels = models }
+               ({ model | setModels = models }, Cmd.none)
+
+        MovementInputMsg msg ->
+            let
+                (updated, cmd) = MovementInput.update msg model.movements
+            in
+                ({ model | movements = updated }, Cmd.map MovementInputMsg cmd)
+
+        AddSet ->
+            let
+                count = 0
+                newSets = model.setModels ++ [SingleSet.initialModel count]
+            in
+                ({ model | setModels = newSets }, Cmd.none)
+
+        DeleteSet i ->
+            let
+                newSets = List.removeAt i model.setModels
+            in
+               ({ model | setModels = newSets }, Cmd.none)
+
 
 main : Program Never Model Msg
-main = beginnerProgram
-    { model = initialModel
-    , view = view
+main = program
+    { init = (initialModel, Cmd.none)
     , update = update
+    , subscriptions = (always Sub.none)
+    , view = view
     }

@@ -109,5 +109,4 @@ splitMovements : (Int, Movement) -> (Int, List Movement)
 splitMovements (idx, str)
     = str
     |> String.split "+"
-    |> List.map String.trim
     |> \ms -> ((idx + List.length ms - 1), ms)

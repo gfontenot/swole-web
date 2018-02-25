@@ -10,8 +10,8 @@ import List.Extra as List
 
 import Helpers.List as List
 import Helpers.Events exposing (onDeleteEmpty)
+import Swole.Types.Movement exposing (Movement)
 
-type alias Movement = String
 type alias Movements = List (Int, Movement)
 
 type Msg

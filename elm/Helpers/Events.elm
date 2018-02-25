@@ -1,4 +1,4 @@
-module Helpers.Events exposing (onChange, onDelete)
+module Helpers.Events exposing (onChange, onDeleteWhen)
 
 import Html exposing (Attribute)
 import Html.Events exposing (on, targetValue, keyCode)
@@ -8,13 +8,21 @@ onChange : (String -> msg) -> Attribute msg
 onChange tagger =
   on "change" <| map tagger targetValue
 
-onDelete : msg -> Attribute msg
-onDelete m =
+onDeleteWhen : Bool -> msg -> Attribute msg
+onDeleteWhen condition message =
     let
+        isDelete : Int -> Json.Decoder msg
         isDelete code = case code == 8 of
-            True -> Json.succeed m
+            True -> Json.succeed message
             False -> Json.fail "Key pressed wasn't delete"
+
+        checkPrecondition : msg -> Json.Decoder msg
+        checkPrecondition message = case condition of
+            True -> Json.succeed message
+            False -> Json.fail "Precondition failed"
+
     in
-        keyCode
-        |> Json.andThen isDelete
-        |> on "keydown"
+       keyCode
+       |> Json.andThen isDelete
+       |> Json.andThen checkPrecondition
+       |> on "keydown"

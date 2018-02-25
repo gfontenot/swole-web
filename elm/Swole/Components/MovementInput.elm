@@ -13,7 +13,7 @@ import Dom exposing (focus)
 import List.Extra as List
 
 import Helpers.List as List
-import Helpers.Events exposing (onDelete)
+import Helpers.Events exposing (onDeleteWhen)
 import Swole.Types.Movement exposing (Movement)
 
 type alias Movements = List (Int, Movement)
@@ -101,7 +101,7 @@ movementField (idx, movement) =
         , value movement
         , id <| "movement-" ++ toString idx
         , onInput <| \m -> MovementChanged (idx, m)
-        , onDelete <| DeleteMovement idx
+        , onDeleteWhen (movement == "") <| DeleteMovement idx
         ]
         []
 

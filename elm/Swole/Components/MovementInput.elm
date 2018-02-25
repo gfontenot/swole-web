@@ -20,10 +20,10 @@ type alias Movements = List (Int, Movement)
 type alias Model = Movements
 
 type Msg
-    = MovementChanged (Int, Movement)
+    = NoOp
+    | MovementChanged (Int, Movement)
     | AddMovement
     | DeleteMovement Int
-    | FocusedField
 
 view : Movements -> Html Msg
 view movements =
@@ -33,6 +33,9 @@ view movements =
 update : Msg -> Movements -> (Movements, Cmd Msg)
 update msg movements =
     case msg of
+        NoOp ->
+            (movements, Cmd.none)
+
         MovementChanged (idx, m) ->
             let
                 (newIdx, newMovements) = splitMovements (idx, m)
@@ -59,9 +62,6 @@ update msg movements =
             in
                (List.enumerated newMovements, updateFocus newIdx)
 
-        FocusedField ->
-            (movements, Cmd.none)
-
 movementsAround : Int -> Movements -> (List Movement, List Movement)
 movementsAround idx movements
     = movements
@@ -74,8 +74,8 @@ updateFocus idx =
     let
         checkFocus : Result Dom.Error () -> Msg
         checkFocus result = case result of
-            Ok _ -> FocusedField
-            Err _ -> FocusedField
+            Ok _ -> NoOp
+            Err _ -> NoOp
     in
         Task.attempt checkFocus (Dom.focus <| "movement-" ++ toString idx)
 

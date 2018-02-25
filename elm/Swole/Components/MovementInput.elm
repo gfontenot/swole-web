@@ -111,11 +111,3 @@ splitMovements (idx, str)
     |> String.split "+"
     |> List.map String.trim
     |> \ms -> ((idx + List.length ms - 1), ms)
-
-main : Program Never Movements Msg
-main = program
-    { init = ([], Cmd.none)
-    , update = update
-    , subscriptions = (always Sub.none)
-    , view = view
-    }

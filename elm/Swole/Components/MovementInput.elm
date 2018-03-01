@@ -79,7 +79,7 @@ updateFocus idx =
 
 movementFields : Movements -> List (Html Msg)
 movementFields movements = case movements of
-    [] -> [movementField (0, "")]
+    [] -> [defaultMovementField]
     ms ->
         let fields = List.intersperse plusLabel (List.map movementField ms)
         in
@@ -90,6 +90,9 @@ plusLabel = text "+"
 
 plusButton : Html Msg
 plusButton = button [ onClick AddMovement ] [ text "+" ]
+
+defaultMovementField : Html Msg
+defaultMovementField = movementField (0, "")
 
 movementField : (Int, Movement) -> Html Msg
 movementField (idx, movement) =

@@ -72,12 +72,10 @@ movementsAround idx movements
 updateFocus : Int -> Cmd Msg
 updateFocus idx =
     let
-        checkFocus : Result Dom.Error () -> Msg
-        checkFocus result = case result of
-            Ok _ -> NoOp
-            Err _ -> NoOp
+        fieldId = "movement-" ++ toString idx
+        setFocus = Dom.focus fieldId
     in
-        Task.attempt checkFocus (Dom.focus <| "movement-" ++ toString idx)
+        Task.attempt (always NoOp) setFocus
 
 movementFields : Movements -> List (Html Msg)
 movementFields movements = case movements of

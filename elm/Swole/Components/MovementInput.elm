@@ -84,8 +84,7 @@ movementFields movements = case movements of
         let fields = List.intersperse plusLabel (List.map movementField ms)
         in
            fields ++ [plusButton]
-
-plusLabel : Html Msg
+plusLabel : Html a
 plusLabel = text "+"
 
 plusButton : Html Msg

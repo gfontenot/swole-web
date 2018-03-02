@@ -4,25 +4,26 @@ import Html exposing (..)
 import Html.Events exposing (onClick, onInput)
 import List.Extra as List
 
-import Swole.Components.MovementInput as MovementInput
+import Swole.Components.Complex as Complex
+import Swole.Types.Complex as Complex exposing (Complex)
 import Swole.Components.SingleSet as SingleSet
 import Helpers.Maybe as Maybe
 import Helpers.List as List
 
 type Msg
-    = MovementInputMsg MovementInput.Msg
+    = ComplexChanged Complex.Msg
     | SingleSetMsg (Int, SingleSet.Msg)
     | AddSet
     | DeleteSet Int
 
 type alias Model =
-    { movements : MovementInput.Model
+    { complex : Complex
     , setModels : List SingleSet.Model
     }
 
 initialModel : Model
 initialModel =
-    { movements = []
+    { complex = Complex.new
     , setModels = [SingleSet.initialModel 0]
     }
 
@@ -32,7 +33,7 @@ view model =
         sets = List.enumerated model.setModels
     in
         div []
-            [ map MovementInputMsg <| MovementInput.view model.movements
+            [ map ComplexChanged <| Complex.view model.complex
             , ol [] (List.map viewSet sets)
             , button [ onClick AddSet ] [ text "Add set" ]
             ]
@@ -61,11 +62,11 @@ update msg model =
             in
                ({ model | setModels = models }, Cmd.none)
 
-        MovementInputMsg msg ->
+        ComplexChanged msg ->
             let
-                (updated, cmd) = MovementInput.update msg model.movements
+                (updated, cmd) = Complex.update msg model.complex
             in
-                ({ model | movements = updated }, Cmd.map MovementInputMsg cmd)
+                ({ model | complex = updated }, Cmd.map ComplexChanged cmd)
 
         AddSet ->
             let

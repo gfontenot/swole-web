@@ -10,6 +10,7 @@ import Helpers.Events exposing (onDeleteWhen)
 import Html exposing (Html, button, div, input, program, text)
 import Html.Attributes exposing (id, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
+import Swole.Components.Common exposing (plusLabel)
 import Swole.Types.Complex as Complex exposing (Complex)
 import Swole.Types.Movement exposing (Movement)
 import Task
@@ -91,11 +92,6 @@ movementFields complex =
                         |> List.intersperse plusLabel
             in
             fields ++ [ plusButton ]
-
-
-plusLabel : Html a
-plusLabel =
-    text "+"
 
 
 plusButton : Html Msg

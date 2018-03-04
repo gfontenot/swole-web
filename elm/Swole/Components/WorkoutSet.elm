@@ -8,6 +8,7 @@ module Swole.Components.WorkoutSet
 import Html exposing (Html, beginnerProgram, div, input, text)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onInput)
+import Swole.Components.Common exposing (plusLabel)
 import Swole.Components.Weight as Weight
 import Swole.Types.Rep as Rep exposing (Rep)
 import Swole.Types.RepScheme as RepScheme exposing (RepScheme)
@@ -45,11 +46,6 @@ update msg set =
 
         WeightUpdated m ->
             { set | weight = Weight.update m set.weight }
-
-
-plusLabel : Html a
-plusLabel =
-    text "+"
 
 
 repField : Int -> Rep -> Html Msg

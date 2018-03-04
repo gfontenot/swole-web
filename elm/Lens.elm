@@ -1,6 +1,7 @@
-module Lens exposing ( Lens )
+module Lens exposing (Lens)
 
-type alias Lens whole part = {
-    get : whole -> part,
-    set : part -> whole -> whole
-}
+
+type alias Lens whole part =
+    { get : whole -> part
+    , set : part -> whole -> whole
+    }

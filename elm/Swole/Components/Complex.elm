@@ -1,18 +1,19 @@
-module Swole.Components.Complex exposing
-    ( Msg
-    , view
-    , update
-    )
+module Swole.Components.Complex
+    exposing
+        ( Msg
+        , update
+        , view
+        )
 
-import Html exposing (Html, program, div, input, text, button)
-import Html.Attributes exposing (placeholder, type_, value, id)
-import Html.Events exposing (onClick, onInput)
-import Task
 import Dom exposing (focus)
-
 import Helpers.Events exposing (onDeleteWhen)
-import Swole.Types.Movement exposing (Movement)
+import Html exposing (Html, button, div, input, program, text)
+import Html.Attributes exposing (id, placeholder, type_, value)
+import Html.Events exposing (onClick, onInput)
 import Swole.Types.Complex as Complex exposing (Complex)
+import Swole.Types.Movement exposing (Movement)
+import Task
+
 
 type Msg
     = NoOp
@@ -20,67 +21,92 @@ type Msg
     | AddMovement
     | DeleteMovement Int
 
+
 view : Complex -> Html Msg
 view movements =
     div []
         (movementFields movements)
 
-update : Msg -> Complex -> (Complex, Cmd Msg)
+
+update : Msg -> Complex -> ( Complex, Cmd Msg )
 update msg complex =
     case msg of
         NoOp ->
-            (complex, Cmd.none)
+            ( complex, Cmd.none )
 
         MovementChanged idx m ->
             let
-                addedComplex = Complex.fromMovement m
-                newComplex = Complex.insertAt idx addedComplex complex
+                addedComplex =
+                    Complex.fromMovement m
 
-                newIdx = idx + (Complex.movementCount addedComplex) - 1
+                newComplex =
+                    Complex.insertAt idx addedComplex complex
+
+                newIdx =
+                    idx + Complex.movementCount addedComplex - 1
             in
-                (newComplex, updateFocus newIdx)
+            ( newComplex, updateFocus newIdx )
 
         AddMovement ->
             let
-                newIdx = Complex.movementCount complex
+                newIdx =
+                    Complex.movementCount complex
             in
-                (complex ++ [""], updateFocus newIdx)
+            ( complex ++ [ "" ], updateFocus newIdx )
 
         DeleteMovement idx ->
             let
-                newMovements = Complex.removeAt idx complex
-                newIdx = max 0 (idx - 1)
+                newMovements =
+                    Complex.removeAt idx complex
+
+                newIdx =
+                    max 0 (idx - 1)
             in
-               (newMovements, updateFocus newIdx)
+            ( newMovements, updateFocus newIdx )
+
 
 updateFocus : Int -> Cmd Msg
 updateFocus idx =
     let
-        fieldId = "movement-" ++ toString idx
-        setFocus = Dom.focus fieldId
+        fieldId =
+            "movement-" ++ toString idx
+
+        setFocus =
+            Dom.focus fieldId
     in
-        Task.attempt (always NoOp) setFocus
+    Task.attempt (always NoOp) setFocus
+
 
 movementFields : Complex -> List (Html Msg)
-movementFields complex = case complex of
-    [] -> [defaultMovementField]
-    c ->
-        let
-            fields
-                = c
-                |> Complex.indexedMap movementField
-                |> List.intersperse plusLabel
-        in
-           fields ++ [plusButton]
+movementFields complex =
+    case complex of
+        [] ->
+            [ defaultMovementField ]
+
+        c ->
+            let
+                fields =
+                    c
+                        |> Complex.indexedMap movementField
+                        |> List.intersperse plusLabel
+            in
+            fields ++ [ plusButton ]
+
 
 plusLabel : Html a
-plusLabel = text "+"
+plusLabel =
+    text "+"
+
 
 plusButton : Html Msg
-plusButton = button [ onClick AddMovement ] [ text "+" ]
+plusButton =
+    button [ onClick AddMovement ] [ text "+" ]
+
 
 defaultMovementField : Html Msg
-defaultMovementField = movementField 0 ""
+defaultMovementField =
+    movementField 0 ""
+
 
 movementField : Int -> Movement -> Html Msg
 movementField idx movement =

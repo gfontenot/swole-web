@@ -1,32 +1,35 @@
-module Swole.Components.Weight exposing
-    ( Msg(..)
-    , update
-    , view
-    )
+module Swole.Components.Weight
+    exposing
+        ( Msg(..)
+        , update
+        , view
+        )
 
-import Html exposing
-    ( Html
-    , div
-    , input
-    , option
-    , select
-    , text
-    )
-
+import Helpers.Events exposing (onChange)
+import Html
+    exposing
+        ( Html
+        , div
+        , input
+        , option
+        , select
+        , text
+        )
 import Html.Attributes exposing (placeholder, selected, type_, value)
 import Html.Events exposing (onInput)
-import Helpers.Events exposing (onChange)
+import Swole.Types.Weight as Weight
+    exposing
+        ( Weight(..)
+        , WeightUnit
+        , weightAmount
+        , weightUnit
+        )
 
-import Swole.Types.Weight as Weight exposing
-    ( Weight(..)
-    , WeightUnit
-    , weightAmount
-    , weightUnit
-    )
 
 type Msg
     = AmountChanged Int
     | UnitChanged WeightUnit
+
 
 view : Weight -> Html Msg
 view weight =
@@ -35,13 +38,16 @@ view weight =
         , unitPicker weight
         ]
 
-update : Msg -> Weight -> Weight
-update msg weight = case msg of
-    AmountChanged amt ->
-        weightAmount.set amt weight
 
-    UnitChanged newUnit ->
-        weightUnit.set newUnit weight
+update : Msg -> Weight -> Weight
+update msg weight =
+    case msg of
+        AmountChanged amt ->
+            weightAmount.set amt weight
+
+        UnitChanged newUnit ->
+            weightUnit.set newUnit weight
+
 
 amountField : Int -> Html Msg
 amountField v =
@@ -53,11 +59,13 @@ amountField v =
         ]
         []
 
+
 unitPicker : Weight -> Html Msg
 unitPicker weight =
     select
         [ onChange (UnitChanged << parseUnit) ]
         (List.map (unitOption weight) Weight.availableUnits)
+
 
 unitOption : Weight -> String -> Html Msg
 unitOption weight unit =
@@ -67,12 +75,14 @@ unitOption weight unit =
         ]
         [ text unit ]
 
+
 parseAmount : String -> Int
-parseAmount str
-    = String.toInt str
-    |> Result.withDefault 0
+parseAmount str =
+    String.toInt str
+        |> Result.withDefault 0
+
 
 parseUnit : String -> WeightUnit
-parseUnit str
-    = Weight.toUnit str
-    |> Result.withDefault Kilos
+parseUnit str =
+    Weight.toUnit str
+        |> Result.withDefault Kilos

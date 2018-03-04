@@ -1,43 +1,58 @@
-module Swole.Types.Complex exposing
-    ( Complex
-    , new
-    , fromMovement
-    , indexedMap
-    , insertAt
-    , movementCount
-    , removeAt
-    )
+module Swole.Types.Complex
+    exposing
+        ( Complex
+        , fromMovement
+        , indexedMap
+        , insertAt
+        , movementCount
+        , new
+        , removeAt
+        )
 
 import List.Extra as List
-
 import Swole.Types.Movement exposing (Movement)
 
-type alias Complex = List Movement
+
+type alias Complex =
+    List Movement
+
 
 new : Complex
-new = []
+new =
+    []
+
 
 fromMovement : Movement -> Complex
-fromMovement = String.split "+"
+fromMovement =
+    String.split "+"
+
 
 indexedMap : (Int -> Movement -> a) -> Complex -> List a
-indexedMap = List.indexedMap
+indexedMap =
+    List.indexedMap
+
 
 insertAt : Int -> Complex -> Complex -> Complex
 insertAt idx new original =
     let
-        (before, after) = splitAround idx original
+        ( before, after ) =
+            splitAround idx original
     in
-        before ++ new ++ after
+    before ++ new ++ after
+
 
 movementCount : Complex -> Int
-movementCount = List.length
+movementCount =
+    List.length
+
 
 removeAt : Int -> Complex -> Complex
-removeAt = List.removeAt
+removeAt =
+    List.removeAt
 
-splitAround : Int -> Complex -> (Complex, Complex)
-splitAround idx complex
-    = complex
-    |> List.splitAt idx
-    |> Tuple.mapSecond (List.drop 1)
+
+splitAround : Int -> Complex -> ( Complex, Complex )
+splitAround idx complex =
+    complex
+        |> List.splitAt idx
+        |> Tuple.mapSecond (List.drop 1)

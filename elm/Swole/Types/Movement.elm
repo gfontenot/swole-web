@@ -1,5 +1,8 @@
-module Swole.Types.Movement exposing
-    ( Movement
-    )
+module Swole.Types.Movement
+    exposing
+        ( Movement
+        )
 
-type alias Movement = String
+
+type alias Movement =
+    String

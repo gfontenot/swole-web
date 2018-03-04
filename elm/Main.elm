@@ -1,71 +1,64 @@
 module Main exposing (main)
 
-import Helpers.List as List
 import Helpers.Maybe as Maybe
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput)
 import List.Extra as List
 import Swole.Components.Complex as Complex
-import Swole.Components.SingleSet as SingleSet
+import Swole.Components.WorkoutSet as WorkoutSet
 import Swole.Types.Complex as Complex exposing (Complex)
+import Swole.Types.Weight exposing (Weight(..))
+import Swole.Types.WorkoutSet as WorkoutSet exposing (WorkoutSet)
 
 
 type Msg
     = ComplexChanged Complex.Msg
-    | SingleSetMsg ( Int, SingleSet.Msg )
+    | SetChanged Int WorkoutSet.Msg
     | AddSet
     | DeleteSet Int
 
 
 type alias Model =
     { complex : Complex
-    , setModels : List SingleSet.Model
+    , sets : List WorkoutSet
     }
 
 
 initialModel : Model
 initialModel =
     { complex = Complex.new
-    , setModels = [ SingleSet.initialModel 0 ]
+    , sets = []
     }
 
 
 view : Model -> Html Msg
 view model =
-    let
-        sets =
-            List.enumerated model.setModels
-    in
     div []
         [ map ComplexChanged <| Complex.view model.complex
-        , ol [] (List.map viewSet sets)
+        , ol [] <| List.indexedMap viewSet model.sets
         , button [ onClick AddSet ] [ text "Add set" ]
         ]
 
 
-viewSet : ( Int, SingleSet.Model ) -> Html Msg
-viewSet ( i, setModel ) =
+viewSet : Int -> WorkoutSet -> Html Msg
+viewSet idx set =
     li []
-        [ map (SingleSetMsg << (\m -> ( i, m ))) (SingleSet.view setModel)
-        , button [ onClick (DeleteSet i) ] [ text "Delete" ]
+        [ Html.map (SetChanged idx) (WorkoutSet.view set)
+        , button [ onClick (DeleteSet idx) ] [ text "Delete" ]
         ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SingleSetMsg ( i, m ) ->
+        SetChanged idx m ->
             let
                 updated =
-                    List.getAt i model.setModels
-                        |> Maybe.fromJust
-                        |> SingleSet.update m
-
-                models =
-                    List.setAt i updated model.setModels
+                    model.sets
+                        |> List.updateAt idx (WorkoutSet.update m)
                         |> Maybe.fromJust
             in
-            ( { model | setModels = models }, Cmd.none )
+            ( { model | sets = updated }, Cmd.none )
 
         ComplexChanged msg ->
             let
@@ -77,19 +70,19 @@ update msg model =
         AddSet ->
             let
                 count =
-                    0
+                    Complex.movementCount model.complex
 
-                newSets =
-                    model.setModels ++ [ SingleSet.initialModel count ]
+                updated =
+                    model.sets ++ [ WorkoutSet.new count (Kilos 0) ]
             in
-            ( { model | setModels = newSets }, Cmd.none )
+            ( { model | sets = updated }, Cmd.none )
 
         DeleteSet i ->
             let
-                newSets =
-                    List.removeAt i model.setModels
+                updated =
+                    List.removeAt i model.sets
             in
-            ( { model | setModels = newSets }, Cmd.none )
+            ( { model | sets = updated }, Cmd.none )
 
 
 main : Program Never Model Msg

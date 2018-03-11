@@ -1,7 +1,7 @@
-module Main exposing (main)
+module Swole.Components.Group exposing (Msg, update, view)
 
 import Helpers.Maybe as Maybe
-import Html exposing (..)
+import Html exposing (Html, button, div, li, ol, program, text)
 import Html.Events exposing (onClick, onInput)
 import List.Extra as List
 import Swole.Components.Complex as Complex
@@ -72,13 +72,3 @@ update msg group =
                         |> Group.deleteSet i
             in
             ( updated, Cmd.none )
-
-
-main : Program Never Group Msg
-main =
-    program
-        { init = ( Group.new, Cmd.none )
-        , update = update
-        , subscriptions = always Sub.none
-        , view = view
-        }

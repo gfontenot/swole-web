@@ -6,9 +6,8 @@ import Html.Events exposing (onClick, onInput)
 import List.Extra as List
 import Swole.Components.Complex as Complex
 import Swole.Components.WorkoutSet as WorkoutSet
-import Swole.Types.Complex as Complex exposing (Complex)
-import Swole.Types.Weight exposing (Weight(..))
-import Swole.Types.WorkoutSet as WorkoutSet exposing (WorkoutSet)
+import Swole.Types.Group as Group exposing (Group, groupComplex, groupSets)
+import Swole.Types.WorkoutSet exposing (WorkoutSet)
 
 
 type Msg
@@ -18,24 +17,11 @@ type Msg
     | DeleteSet Int
 
 
-type alias Model =
-    { complex : Complex
-    , sets : List WorkoutSet
-    }
-
-
-initialModel : Model
-initialModel =
-    { complex = Complex.new
-    , sets = []
-    }
-
-
-view : Model -> Html Msg
-view model =
+view : Group -> Html Msg
+view group =
     div []
-        [ map ComplexChanged <| Complex.view model.complex
-        , ol [] <| List.indexedMap viewSet model.sets
+        [ Html.map ComplexChanged <| Complex.view <| groupComplex.get group
+        , ol [] <| List.indexedMap viewSet <| groupSets.get group
         , button [ onClick AddSet ] [ text "Add set" ]
         ]
 
@@ -48,47 +34,50 @@ viewSet idx set =
         ]
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Msg -> Group -> ( Group, Cmd Msg )
+update msg group =
     case msg of
         SetChanged idx m ->
             let
                 updated =
-                    model.sets
+                    group
+                        |> groupSets.get
                         |> List.updateAt idx (WorkoutSet.update m)
                         |> Maybe.fromJust
+                        |> flip groupSets.set group
             in
-            ( { model | sets = updated }, Cmd.none )
+            ( updated, Cmd.none )
 
         ComplexChanged msg ->
             let
                 ( updated, cmd ) =
-                    Complex.update msg model.complex
+                    group
+                        |> groupComplex.get
+                        |> Complex.update msg
+                        |> Tuple.mapFirst (flip groupComplex.set group)
             in
-            ( { model | complex = updated }, Cmd.map ComplexChanged cmd )
+            ( updated, Cmd.map ComplexChanged cmd )
 
         AddSet ->
             let
-                count =
-                    Complex.movementCount model.complex
-
                 updated =
-                    model.sets ++ [ WorkoutSet.new count (Kilos 0) ]
+                    Group.addSet group
             in
-            ( { model | sets = updated }, Cmd.none )
+            ( updated, Cmd.none )
 
         DeleteSet i ->
             let
                 updated =
-                    List.removeAt i model.sets
+                    group
+                        |> Group.deleteSet i
             in
-            ( { model | sets = updated }, Cmd.none )
+            ( updated, Cmd.none )
 
 
-main : Program Never Model Msg
+main : Program Never Group Msg
 main =
     program
-        { init = ( initialModel, Cmd.none )
+        { init = ( Group.new, Cmd.none )
         , update = update
         , subscriptions = always Sub.none
         , view = view

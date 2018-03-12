@@ -1,21 +1,21 @@
 module Main exposing (main)
 
 import Html exposing (Html, program)
-import Swole.Components.Group as Group
-import Swole.Types.Group as Group exposing (Group)
+import Swole.Components.Workout as Workout
+import Swole.Types.Workout as Workout exposing (Workout)
 
 
 type alias Model =
-    Group
+    Workout
 
 
 type Msg
-    = ModelMsg Group.Msg
+    = ModelMsg Workout.Msg
 
 
 view : Model -> Html Msg
 view model =
-    Html.map ModelMsg <| Group.view model
+    Html.map ModelMsg <| Workout.view model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -24,7 +24,7 @@ update msg model =
         ModelMsg m ->
             let
                 ( updated, cmd ) =
-                    Group.update m model
+                    Workout.update m model
             in
             ( updated, Cmd.map ModelMsg cmd )
 
@@ -32,7 +32,7 @@ update msg model =
 main : Program Never Model Msg
 main =
     program
-        { init = ( Group.new, Cmd.none )
+        { init = ( Workout.new, Cmd.none )
         , update = update
         , subscriptions = always Sub.none
         , view = view

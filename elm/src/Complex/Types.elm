@@ -1,6 +1,7 @@
-module Swole.Types.Complex
+module Complex.Types
     exposing
         ( Complex
+        , Msg(..)
         , fromMovement
         , indexedMap
         , insertAt
@@ -11,6 +12,13 @@ module Swole.Types.Complex
 
 import List.Extra as List
 import Swole.Types.Movement exposing (Movement)
+
+
+type Msg
+    = NoOp
+    | MovementChanged Int Movement
+    | AddMovement
+    | DeleteMovement Int
 
 
 type alias Complex =

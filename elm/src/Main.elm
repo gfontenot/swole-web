@@ -1,12 +1,13 @@
 module Main exposing (main)
 
+import Complex.State as Complex
+import Complex.Types as Complex exposing (Complex)
+import Complex.View as Complex
 import Extensions.Maybe as Maybe
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput)
 import List.Extra as List
-import Swole.Components.Complex as Complex
 import Swole.Components.WorkoutSet as WorkoutSet
-import Swole.Types.Complex as Complex exposing (Complex)
 import Swole.Types.WorkoutSet as WorkoutSet exposing (WorkoutSet)
 import Weight.Types exposing (Weight(..))
 

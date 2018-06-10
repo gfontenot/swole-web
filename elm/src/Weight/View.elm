@@ -1,8 +1,6 @@
-module Swole.Components.Weight
+module Weight.View
     exposing
-        ( Msg(..)
-        , update
-        , view
+        ( view
         )
 
 import Extensions.Events exposing (onChange)
@@ -17,18 +15,14 @@ import Html
         )
 import Html.Attributes exposing (placeholder, selected, type_, value)
 import Html.Events exposing (onInput)
-import Swole.Types.Weight as Weight
+import Weight.Types as Weight
     exposing
-        ( Weight(..)
+        ( Msg(..)
+        , Weight(..)
         , WeightUnit
         , weightAmount
         , weightUnit
         )
-
-
-type Msg
-    = AmountChanged Int
-    | UnitChanged WeightUnit
 
 
 view : Weight -> Html Msg
@@ -37,16 +31,6 @@ view weight =
         [ amountField <| weightAmount.get weight
         , unitPicker weight
         ]
-
-
-update : Msg -> Weight -> Weight
-update msg weight =
-    case msg of
-        AmountChanged amt ->
-            weightAmount.set amt weight
-
-        UnitChanged newUnit ->
-            weightUnit.set newUnit weight
 
 
 amountField : Int -> Html Msg

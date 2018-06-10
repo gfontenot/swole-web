@@ -1,6 +1,7 @@
-module Swole.Types.Weight
+module Weight.Types
     exposing
-        ( Weight(..)
+        ( Msg(..)
+        , Weight(..)
         , WeightUnit
         , availableUnits
         , hasUnit
@@ -10,6 +11,11 @@ module Swole.Types.Weight
         )
 
 import Lens exposing (Lens)
+
+
+type Msg
+    = AmountChanged Int
+    | UnitChanged WeightUnit
 
 
 type alias WeightUnit =

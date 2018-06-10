@@ -7,8 +7,8 @@ import List.Extra as List
 import Swole.Components.Complex as Complex
 import Swole.Components.WorkoutSet as WorkoutSet
 import Swole.Types.Complex as Complex exposing (Complex)
-import Swole.Types.Weight exposing (Weight(..))
 import Swole.Types.WorkoutSet as WorkoutSet exposing (WorkoutSet)
+import Weight.Types exposing (Weight(..))
 
 
 type Msg

@@ -9,11 +9,12 @@ import Html exposing (Html, beginnerProgram, div, input, text)
 import Html.Attributes exposing (placeholder, type_, value)
 import Html.Events exposing (onInput)
 import Swole.Components.Common exposing (plusLabel)
-import Swole.Components.Weight as Weight
 import Swole.Types.Rep as Rep exposing (Rep)
 import Swole.Types.RepScheme as RepScheme exposing (RepScheme)
-import Swole.Types.Weight exposing (Weight(..))
 import Swole.Types.WorkoutSet exposing (WorkoutSet)
+import Weight.State as Weight
+import Weight.Types as Weight exposing (Weight(..))
+import Weight.View as Weight
 
 
 type Msg

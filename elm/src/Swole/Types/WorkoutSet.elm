@@ -1,7 +1,7 @@
 module Swole.Types.WorkoutSet exposing (WorkoutSet, new)
 
 import Swole.Types.RepScheme as RepScheme exposing (RepScheme)
-import Swole.Types.Weight exposing (Weight)
+import Weight.Types exposing (Weight)
 
 
 type alias WorkoutSet =

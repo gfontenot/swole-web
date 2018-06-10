@@ -1,4 +1,4 @@
-module Helpers.Maybe exposing (fromJust)
+module Extensions.Maybe exposing (fromJust)
 
 
 fromJust : Maybe a -> a

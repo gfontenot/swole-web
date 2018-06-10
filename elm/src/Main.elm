@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Helpers.Maybe as Maybe
+import Extensions.Maybe as Maybe
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput)
 import List.Extra as List

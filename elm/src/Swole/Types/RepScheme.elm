@@ -1,6 +1,6 @@
 module Swole.Types.RepScheme exposing (RepScheme, new, setAt)
 
-import Helpers.Maybe as Maybe
+import Extensions.Maybe as Maybe
 import List.Extra as List
 import Swole.Types.Rep as Rep exposing (Rep)
 

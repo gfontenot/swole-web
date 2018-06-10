@@ -6,7 +6,7 @@ module Swole.Components.Complex
         )
 
 import Dom exposing (focus)
-import Helpers.Events exposing (onDeleteWhen)
+import Extensions.Events exposing (onDeleteWhen)
 import Html exposing (Html, button, div, input, program, text)
 import Html.Attributes exposing (id, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)

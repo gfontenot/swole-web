@@ -1,4 +1,4 @@
-module Helpers.Events exposing (onChange, onDeleteWhen)
+module Extensions.Events exposing (onChange, onDeleteWhen)
 
 import Html exposing (Attribute)
 import Html.Events exposing (keyCode, on, targetValue)

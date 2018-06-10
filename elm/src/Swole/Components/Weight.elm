@@ -5,7 +5,7 @@ module Swole.Components.Weight
         , view
         )
 
-import Helpers.Events exposing (onChange)
+import Extensions.Events exposing (onChange)
 import Html
     exposing
         ( Html
